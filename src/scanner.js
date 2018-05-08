@@ -316,7 +316,17 @@ class Scanner extends EventEmitter {
     }
 
     let video = opts.video || document.createElement('video');
-    video.setAttribute('autoplay', 'autoplay');
+    video.setAttribute('autoplay', true);
+
+    //iOS Safari fixes: https://github.com/webrtc/samples/issues/929
+    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if(iOS) {
+      video.setAttribute("playsinline", true);
+      video.setAttribute("controls", true); // iOS fix hack - see 
+      setTimeout(() => {
+        video.removeAttribute("controls");
+      },250);
+    }
 
     return video;
   }
